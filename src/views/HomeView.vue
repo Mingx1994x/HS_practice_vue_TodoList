@@ -1,25 +1,22 @@
 <script setup>
-// import { RouterLink, RouterView } from 'vue-router'
+import TheWelcome from '@/components/TheWelcome.vue'
+import { RouterView } from 'vue-router'
 
-// import TheWelcome from '../components/TheWelcome.vue'
+// const HexAPI = 'https://todolist-api.hexschool.io'
+// const token = ref('')
 </script>
 
 <template>
-  <main class="bg-cus-primary">
+  <main class="bg-warning">
     <div class="container-lg">
-      <div class="row">
-        <div class="col-md-5 d-none d-md-block">
-          <!-- <TheWelcome /> -->
-          <h3>這裡是登入首頁</h3>
+      <div class="row d-flex flex-column flex-md-row">
+        <div class="col-md-6 d-flex align-items-center">
+          <TheWelcome></TheWelcome>
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-6 d-flex flex-column justify-content-center">
+          <RouterView />
+        </div>
       </div>
     </div>
   </main>
 </template>
-
-<style>
-.bg-cus-primary {
-  background-color: #ffd370;
-}
-</style>
