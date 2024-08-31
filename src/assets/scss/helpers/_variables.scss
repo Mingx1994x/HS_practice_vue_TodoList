@@ -460,8 +460,9 @@ $body-emphasis-color: $black !default;
 // Links
 //
 // Style anchor elements.
-
-$link-color: $primary !default;
+// custom
+$link-color: $secondary !default;
+// $link-color: $primary !default;
 $link-decoration: underline !default;
 $link-shade-percentage: 20% !default;
 $link-hover-color: shift-color($link-color, $link-shade-percentage) !default;
@@ -984,7 +985,9 @@ $form-color-width: 3rem !default;
 // scss-docs-end form-input-variables
 
 // scss-docs-start form-check-variables
-$form-check-input-width: 1em !default;
+// custom 
+$form-check-input-width: 1.25em !default;
+// $form-check-input-width: 1em !default;
 $form-check-min-height: $font-size-base * $line-height-base !default;
 $form-check-padding-start: $form-check-input-width + .5em !default;
 $form-check-margin-bottom: .125rem !default;

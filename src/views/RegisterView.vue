@@ -17,11 +17,14 @@ const checker = computed(() => checkPwd.value === signupData.value.password)
 const failSignup = ref(false)
 const errResponse = ref('')
 const signup = async () => {
-  if (!signupData.value.email || !signupData.value.password || !signupData.value.nickname) {
-    alert('還有欄位未填喔')
-    return
-  }
   try {
+    if (!signupData.value.email || !signupData.value.password || !signupData.value.nickname) {
+      alert('還有欄位未填喔')
+      return
+    } else if (checkPwd.value !== signupData.value.password) {
+      alert('密碼欄位不一致喔')
+      return
+    }
     await axios.post(`${HexAPI}/users/sign_up`, signupData.value)
     // console.log(res)
     // signupRes.value = res.data.uid
