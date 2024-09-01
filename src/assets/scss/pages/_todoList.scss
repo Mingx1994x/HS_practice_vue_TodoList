@@ -1,0 +1,27 @@
+.main {
+    min-height: 100vh;
+
+    a[href="#"] {
+        color: $dark;
+
+        &:hover {
+            background-color: $dark;
+            color: $white
+        }
+
+        &:focus {
+            color: $danger
+        }
+    }
+
+}
+
+.bg-linear-warning-light {
+    background: linear-gradient(172.7deg, #FFD370 5.12%, #FFD370 53.33%, #FFD370 53.44%, #FFFFFF 53.45%, #FFFFFF 94.32%);
+
+    @include media-breakpoint-down(md) {
+        & {
+            background: $warning;
+        }
+    }
+}

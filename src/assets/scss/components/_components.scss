@@ -2,14 +2,6 @@
     padding: 12px 48px;
 }
 
-// .squareBtn {
-//      padding: 10px;
-// }
-
-.bg-linear-warning-light {
-    background: linear-gradient(172.7deg, #FFD370 5.12%, #FFD370 53.33%, #FFD370 53.44%, #FFFFFF 53.45%, #FFFFFF 94.32%);
-}
-
 .listBorder-bottom {
     border-bottom: #E5E5E5 1px solid;
 }
@@ -23,30 +15,10 @@
     color: $secondary;
 }
 
+label {
+    cursor: pointer;
+}
+
 .btn>.bi::before {
     vertical-align: 0;
 }
-
-// custom checkbox
-// .custom-checkbox.isDone .form-check-input {
-//     opacity: 0;
-//     position: absolute;
-//     z-index: -1;
-// }
-
-// .custom-checkbox.isDone .form-check-label {
-//     position: relative;
-//     padding-left: 2rem;
-//     /* 调整padding以容纳图标 */
-//     cursor: pointer;
-// }
-
-// .custom-checkbox.isDone .form-check-label::before {
-//     content: <i class="bi bi-check-lg">;
-//     position: absolute;
-//     left: 0;
-//     top: 50%;
-//     transform: translateY(-50%);
-//     font-size: 1.25rem;
-//     color: $warning
-// }

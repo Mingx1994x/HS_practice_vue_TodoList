@@ -1,0 +1,22 @@
+main {
+    min-height: 100vh;
+
+    .loginView {
+        padding-top: 149px;
+        padding-bottom: 114px;
+
+        @include media-breakpoint-down(md) {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    }
+
+    .router-link {
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+
+
+}

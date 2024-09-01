@@ -1,4 +1,8 @@
 <script setup>
+import TodoNone from '@/components/TodoNone.vue'
+import TodosAll from '@/components/TodosAll.vue'
+import TodosDone from '@/components/TodosDone.vue'
+import TodosUndone from '@/components/TodosUndone.vue'
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -23,7 +27,7 @@ onMounted(async () => {
     isCheckout.value = true
     readTodos()
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     alert('還沒有登入唷')
     router.push('/')
   }
@@ -66,8 +70,8 @@ const readTodos = async () => {
     if (todosNum.value.all !== 0) isGet.value = false
     else isGet.value = true
   } catch (error) {
-    console.log(error)
-    // errResponse.value.read = error.response.data.message
+    // console.log(error)
+    errResponse.value = error.response.data.message
   }
 }
 
@@ -76,19 +80,20 @@ const isLogout = ref(true)
 // const logoutMsg = ref('')
 const logout = async (userId) => {
   try {
-    const res = await axios.post(`${HexAPI}/users/sign_out`, userId, {
+    await axios.post(`${HexAPI}/users/sign_out`, userId, {
       headers: {
         authorization: token.value
       }
     })
-    console.log(res)
+    // console.log(res)
     // logoutMsg.value = res.data.message
     document.cookie = 'userToken=null'
     isLogout.value = true
     router.push('/')
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     isLogout.value = false
+    errResponse.value = error.response.data.message
   }
 }
 
@@ -119,8 +124,8 @@ const addTodo = async () => {
     newTodo.value = ''
     readTodos()
   } catch (error) {
-    console.log(error)
-    errResponse.value.add = error.response.data.message
+    // console.log(error)
+    errResponse.value = error.response.data.message
   }
 }
 
@@ -130,15 +135,16 @@ const deleteTodo = async (todoId) => {
   // console.log(`${HexAPI}/todos/${todoId}`)
   // console.log(token.value)
   try {
-    const res = await axios.delete(`${HexAPI}/todos/${todoId}`, {
+    await axios.delete(`${HexAPI}/todos/${todoId}`, {
       headers: {
         authorization: token.value
       }
     })
-    console.log(res)
+    // console.log(res)
     readTodos()
   } catch (error) {
-    console.log(error)
+    // console.log(error)
+    errResponse.value = error.response.data.message
   }
 }
 
@@ -149,7 +155,7 @@ const updateTodo = async (todoId) => {
   // console.log(token.value)
 
   try {
-    const res = await axios.patch(
+    await axios.patch(
       `${HexAPI}/todos/${todoId}/toggle`,
       {},
       {
@@ -158,15 +164,16 @@ const updateTodo = async (todoId) => {
         }
       }
     )
-    console.log(res)
+    // console.log(res)
     readTodos()
   } catch (error) {
-    console.log(error)
+    // console.log(error)
+    errResponse.value = error.response.data.message
   }
 }
 </script>
 <template>
-  <div class="bg-linear-warning-light px-c2-1 pt-3" style="min-height: 670px">
+  <div class="main bg-linear-warning-light px-c2-1 pt-3">
     <div class="container-lg">
       <header class="mb-3 mb-md-c4-3">
         <div class="row d-flex align-items-center">
@@ -174,13 +181,13 @@ const updateTodo = async (todoId) => {
             <img alt="totoList logo" class="img-fluid" src="@/assets/images/logo.png" />
           </div>
           <div class="col-md-8 col-4">
-            <div class="d-flex">
+            <div class="d-flex align-items-center">
               <p class="fw-bold d-none d-md-block ms-auto" v-show="isCheckout">
                 {{ userData.nickname }}的代辦
               </p>
               <a
                 href="#"
-                class="link-dark text-decoration-none ms-auto ms-md-4"
+                class="text-decoration-none rounded-3 ms-auto ms-md-3 p-2"
                 @click.prevent="logout(userData.uid)"
               >
                 登出
@@ -213,14 +220,7 @@ const updateTodo = async (todoId) => {
       </div>
       <div class="row d-flex justify-content-center" v-if="isGet">
         <div class="col-md-4">
-          <div class="pt-4 pt-md-c4-4">
-            <p class="text-center mb-3">目前尚無待辦事項</p>
-            <img
-              alt="totoList logo"
-              class="img-fluid d-block mx-auto"
-              src="@/assets/images/empty 1.png"
-            />
-          </div>
+          <TodoNone />
         </div>
       </div>
       <div class="row d-flex justify-content-center" v-else>
@@ -280,160 +280,34 @@ const updateTodo = async (todoId) => {
             </ul>
             <div class="tab-content" id="ListTabContent">
               <!-- ALL List -->
-              <ul
-                class="tab-pane list-unstyled fade show active px-3 pb-3 pt-4 ps-md-4 pb-md-4"
-                id="allList-tab-pane"
-                role="tabpanel"
-                aria-labelledby="allList-tab"
-                tabindex="0"
-              >
-                <div class="d-flex align-items-start" v-for="item in todos" :key="item.id">
-                  <li
-                    class="form-check custom-checkbox listBorder-bottom flex-grow-1 d-flex ps-0 pb-3 mb-3"
-                    :class="{ isDone: item.status }"
-                  >
-                    <!-- <input
-                      class="form-check-input ms-0 me-3"
-                      type="checkbox"
-                      v-model="item.status"
-                      :id="item.id"
-                    />
+              <TodosAll
+                :todos="todos"
+                :todosNum="todosNum.undone"
+                @del-todo="deleteTodo"
+                @update-todo="updateTodo"
+              />
 
-                    <label class="form-check-label" :for="item.id">{{ item.content }} </label>
-                    <button
-                      type="button"
-                      @click="deleteTodo(item.id)"
-                      class="btn-close d-md-none ms-auto"
-                    ></button> -->
-                    <button
-                      v-if="!item.status"
-                      type="button"
-                      class="btn border-0 fs-5 pt-0"
-                      @click="updateTodo(item.id)"
-                    >
-                      <i class="bi bi-app"></i>
-                    </button>
-                    <button
-                      v-else
-                      type="button"
-                      class="btn border-0 fs-5 text-warning pt-0"
-                      @click="updateTodo(item.id)"
-                    >
-                      <i class="bi bi-check-lg"></i>
-                    </button>
-                    <p>{{ item.content }}</p>
-                    <button
-                      type="button"
-                      @click="deleteTodo(item.id)"
-                      class="btn-close d-md-none ms-auto"
-                    ></button>
-                  </li>
-                  <button
-                    type="button"
-                    @click="deleteTodo(item.id)"
-                    class="btn-close d-none d-md-block ms-auto"
-                  ></button>
-                </div>
-                <p class="py-2">{{ todosNum.undone }}個待完成項目</p>
-              </ul>
               <!-- undone List -->
-              <ul
-                class="tab-pane list-unstyled fade p-3 py-md-4 ps-md-4 pe-md-3"
-                id="undone-tab-pane"
-                role="tabpanel"
-                aria-labelledby="undone-tab"
-                tabindex="0"
-              >
-                <div class="d-flex align-items-start" v-for="item in undoneTodos" :key="item.id">
-                  <li
-                    class="form-check custom-checkbox listBorder-bottom flex-grow-1 d-flex ps-0 pb-3 mb-3"
-                    :class="{ isDone: item.status }"
-                  >
-                    <button
-                      v-if="!item.status"
-                      type="button"
-                      class="btn border-0 fs-5 pt-0"
-                      @click="updateTodo(item.id)"
-                    >
-                      <i class="bi bi-app"></i>
-                    </button>
-                    <button
-                      v-else
-                      type="button"
-                      class="btn border-0 fs-5 text-warning pt-0"
-                      @click="updateTodo(item.id)"
-                    >
-                      <i class="bi bi-check-lg"></i>
-                    </button>
-                    <p>{{ item.content }}</p>
-                    <button
-                      type="button"
-                      @click="deleteTodo(item.id)"
-                      class="btn-close d-md-none ms-auto"
-                    ></button>
-                  </li>
-                  <button
-                    type="button"
-                    @click="deleteTodo(item.id)"
-                    class="btn-close d-none d-md-block ms-auto"
-                  ></button>
-                </div>
-                <p class="py-2">{{ todosNum.undone }}個待完成項目</p>
-              </ul>
+              <TodosUndone
+                :undoneTodos="undoneTodos"
+                :todosNum="todosNum.undone"
+                @update-todo="updateTodo"
+                @del-todo="deleteTodo"
+              />
+
               <!-- done List -->
-              <ul
-                class="tab-pane list-unstyled fade p-3 py-md-4 ps-md-4 pe-md-3"
-                id="done-tab-pane"
-                role="tabpanel"
-                aria-labelledby="done-tab"
-                tabindex="0"
-              >
-                <div class="d-flex align-items-start" v-for="item in doneTodos" :key="item.id">
-                  <li
-                    class="form-check custom-checkbox listBorder-bottom flex-grow-1 d-flex ps-0 pb-3 mb-3"
-                    :class="{ isDone: item.status }"
-                  >
-                    <button
-                      v-if="!item.status"
-                      type="button"
-                      class="btn border-0 fs-5 pt-0"
-                      @click="updateTodo(item.id)"
-                    >
-                      <i class="bi bi-app"></i>
-                    </button>
-                    <button
-                      v-else
-                      type="button"
-                      class="btn border-0 fs-5 text-warning pt-0"
-                      @click="updateTodo(item.id)"
-                    >
-                      <i class="bi bi-check-lg"></i>
-                    </button>
-                    <p>{{ item.content }}</p>
-                    <button
-                      type="button"
-                      @click="deleteTodo(item.id)"
-                      class="btn-close d-md-none ms-auto"
-                    ></button>
-                  </li>
-                  <button
-                    type="button"
-                    @click="deleteTodo(item.id)"
-                    class="btn-close d-none d-md-block ms-auto"
-                  ></button>
-                </div>
-                <p class="py-2">{{ todosNum.done }}個已完成項目</p>
-              </ul>
+              <TodosDone
+                :doneTodos="doneTodos"
+                :todosNum="todosNum.done"
+                @update-todo="updateTodo"
+                @del-todo="deleteTodo"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- <div class="about">
-    <h1>This is an todoList page</h1>
-  </div> -->
 </template>
 
 <style></style>

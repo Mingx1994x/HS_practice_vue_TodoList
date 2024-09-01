@@ -16,17 +16,10 @@ const login = async () => {
   // console.log(`${HexAPI}/users/sign_in`)
   try {
     const res = await axios.post(`${HexAPI}/users/sign_in`, loginData.value)
-    // const res = await axios.post(`${HexAPI}/users/sign_in`, loginData.value)
     console.log(res)
-    // token.value = res.data.token
     document.cookie = `userToken=${res.data.token}; `
     isLogin.value = true
-    loginData.value = {
-      email: '',
-      password: ''
-    }
     router.push('/todoList')
-    // checkout()
   } catch (error) {
     console.log(error)
     errResponse.value = error.response.data.message
@@ -41,7 +34,7 @@ const login = async () => {
     <div class="row d-flex">
       <div class="col-md-8 mx-auto">
         <h2 class="text-center fs-5 fs-md-4 mb-c4-1 mb-md-4">最實用的線上代辦事項服務</h2>
-        <div class="pe-2 pe-md-0 mb-c3-1">
+        <div class="pe-2 pe-md-0 mb-c4-3 mb-md-c3-1">
           <label for="userEmail" class="form-label">Email</label>
           <input
             type="email"
@@ -69,16 +62,9 @@ const login = async () => {
           <button type="button" class="btn btn-dark rectangleBtn" @click="login">登入</button>
         </div>
         <div class="d-flex justify-content-center">
-          <RouterLink to="/register" class="btn border-0"> 註冊帳號 </RouterLink>
+          <RouterLink to="/register" class="router-link btn border-0"> 註冊帳號 </RouterLink>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.loginView {
-  padding-top: 149px;
-  padding-bottom: 114px;
-}
-</style>
